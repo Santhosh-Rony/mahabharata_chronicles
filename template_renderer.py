@@ -57,24 +57,21 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
         raise FileNotFoundError(f"Template not found at {template_path}. Please add your 9:16 template here.")
         
     try:
-        # Start with massive defaults. The while loop will naturally shrink them
-        # down until they perfectly fit the screen, ensuring we always maximize
-        # the font size for short text before relying on gap spacing!
-        base_content_size = 42
-        base_title_size = 50
+        # Default fixed sizes for premium aesthetic
+        base_content_size = 34
+        base_title_size = 40
         
-        while base_content_size >= 20:
+        while base_content_size >= 28:
             font_path = "assets/NotoSerif-VariableFont_wdth,wght.ttf"
             font_italic_path = "assets/NotoSerif-Italic-VariableFont_wdth,wght.ttf"
             
-            # Dynamic font sizes
             title_font = load_font(font_path, 80)
             section_title_font = load_font(font_path, base_title_size)
             content_font = load_font(font_path, base_content_size)
-            quiz_font = load_font(font_path, base_content_size) # Synced perfectly to content font
+            quiz_font = load_font(font_path, base_content_size)
             
             img_width, img_height = 1080, 1920
-            x_margin = 120
+            x_margin = 100
             max_width = img_width - (x_margin * 2) - 80
             
             def _layout_pass(draw, spacing_bonus=0):
@@ -110,45 +107,62 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                     draw.text((img_width/2, 150), title_text, font=t_font, fill=(90, 40, 10, 255), anchor="ms", stroke_width=2, stroke_fill=(90, 40, 10, 255))
                     current_y = 280 + spacing_bonus
                 
-                # Content Sections (dynamic based on post.sections, adding spacing_bonus after each)
-                current_y += 40 # Give extra breathing room below the main title!
+                # Content Sections
+                current_y += 30
                 for section in post.sections:
-                    current_y = draw_section(draw, section.title, section.content, current_y, max_width, section_title_font, content_font, x_margin) + spacing_bonus
+                    title_color = (139, 69, 19, 255)
+                    content_color = (30, 30, 30, 255)
+                    
+                    # Hard Truncation Safety Net for Rogue AI
+                    safe_content = section.content
+                    if len(safe_content) > 180:
+                        safe_content = safe_content[:177] + "..."
+                        
+                    draw.text((x_margin, current_y), section.title, font=section_title_font, fill=title_color, stroke_width=1, stroke_fill=title_color) 
+                    left, top, right, bottom = draw.textbbox((0, 0), section.title, font=section_title_font, stroke_width=1)
+                    
+                    y_content = current_y + (bottom - top) + 10
+                    
+                    wrapped_content = wrap_text(safe_content, content_font, max_width, draw)
+                    draw.multiline_text((x_margin, y_content), wrapped_content, font=content_font, fill=content_color, spacing=10)
+                    
+                    left, top, right, bottom = draw.multiline_textbbox((x_margin, y_content), wrapped_content, font=content_font, spacing=10)
+                    current_y = y_content + (bottom - top) + 20 + spacing_bonus
                 
                 # Quiz Section
                 quiz_y = current_y
                 draw.text((x_margin, quiz_y), "QUIZ :", font=section_title_font, fill=(139, 69, 19, 255), stroke_width=1, stroke_fill=(139, 69, 19, 255))
-                quiz_y += 60
+                quiz_y += 50
                 
                 q_wrapped = wrap_text(post.quiz.question, quiz_font, max_width, draw)
-                draw.multiline_text((x_margin, quiz_y), q_wrapped, font=quiz_font, fill=(30, 30, 30, 255), spacing=15, align="left")
+                draw.multiline_text((x_margin, quiz_y), q_wrapped, font=quiz_font, fill=(30, 30, 30, 255), spacing=10, align="left")
                 
-                left, top, right, bottom = draw.multiline_textbbox((x_margin, quiz_y), q_wrapped, font=quiz_font, spacing=15)
-                quiz_y += (bottom - top) + 30
+                left, top, right, bottom = draw.multiline_textbbox((x_margin, quiz_y), q_wrapped, font=quiz_font, spacing=10)
+                quiz_y += (bottom - top) + 20
                 
-                # Try 2x2 Grid first (A & B on row 1, C & D on row 2)
-                opt_row1 = f"A: {post.quiz.options[0].text}    B: {post.quiz.options[1].text}"
-                opt_row2 = f"C: {post.quiz.options[2].text}    D: {post.quiz.options[3].text}"
+                # Quiz Options Safety Net
+                safe_opts = [opt.text[:35] + "..." if len(opt.text) > 38 else opt.text for opt in post.quiz.options]
+                opt_row1 = f"A: {safe_opts[0]}    B: {safe_opts[1]}"
+                opt_row2 = f"C: {safe_opts[2]}    D: {safe_opts[3]}"
                 
                 left1, top1, right1, bottom1 = draw.textbbox((0, 0), opt_row1, font=quiz_font)
                 left2, top2, right2, bottom2 = draw.textbbox((0, 0), opt_row2, font=quiz_font)
                 
                 if (right1 - left1) > max_width or (right2 - left2) > max_width:
-                    # Switch to 1x4 vertical list with text wrapping if options are too long!
-                    for i, opt in enumerate(post.quiz.options):
+                    for i, opt_text in enumerate(safe_opts):
                         letter = ["A", "B", "C", "D"][i]
-                        opt_text = f"{letter}: {opt.text}"
-                        opt_wrapped = wrap_text(opt_text, quiz_font, max_width, draw)
-                        draw.multiline_text((x_margin, quiz_y), opt_wrapped, font=quiz_font, fill=(30, 30, 30, 255), spacing=10)
-                        left, top, right, bottom = draw.multiline_textbbox((x_margin, quiz_y), opt_wrapped, font=quiz_font, spacing=10)
-                        quiz_y += (bottom - top) + 15
+                        full_opt = f"{letter}: {opt_text}"
+                        opt_wrapped = wrap_text(full_opt, quiz_font, max_width, draw)
+                        draw.multiline_text((x_margin, quiz_y), opt_wrapped, font=quiz_font, fill=(30, 30, 30, 255), spacing=8)
+                        left, top, right, bottom = draw.multiline_textbbox((x_margin, quiz_y), opt_wrapped, font=quiz_font, spacing=8)
+                        quiz_y += (bottom - top) + 12
                 else:
                     draw.text((x_margin, quiz_y), opt_row1, font=quiz_font, fill=(30, 30, 30, 255))
-                    quiz_y += (bottom1 - top1) + 15
+                    quiz_y += (bottom1 - top1) + 12
                     draw.text((x_margin, quiz_y), opt_row2, font=quiz_font, fill=(30, 30, 30, 255))
                 
-                # Comment Call to Action (adding spacing_bonus before it)
-                quiz_y += 80 + spacing_bonus
+                # Comment Call to Action
+                quiz_y += 60 + spacing_bonus
                 draw.text((x_margin, quiz_y), "Comment your answer below!", font=section_title_font, fill=(139, 69, 19, 255), stroke_width=1, stroke_fill=(139, 69, 19, 255))
                 
                 left, top, right, bottom = draw.textbbox((x_margin, quiz_y), "Comment your answer below!", font=section_title_font)
@@ -159,28 +173,27 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
             dummy_draw = ImageDraw.Draw(dummy_img)
             
             final_y = _layout_pass(dummy_draw, spacing_bonus=0)
-            
-            # Target perfectly filling the screen down to Y=1750 (leaving 170px for leaves at the bottom)
             target_bottom = 1750
             
             if final_y > target_bottom:
-                logger.info(f"Content overflowed (Y={final_y} > {target_bottom}). Shrinking fonts and retrying.")
-                base_content_size -= 2
-                base_title_size -= 2
-                continue # Try again with smaller base fonts!
-                
-            # It fits! Let's calculate how much empty space is left and distribute it.
-            empty_space = target_bottom - final_y
-            # We added spacing_bonus in exactly 7 places in the layout engine
-            spacing_bonus = int(empty_space / 7)
-            logger.info(f"Layout fits beautifully! Distributing {empty_space}px of extra space as a {spacing_bonus}px gap bonus.")
+                if base_content_size > 28:
+                    logger.warning(f"Text overflowed perfectly fixed layout (Y={final_y} > {target_bottom}). Triggering Emergency Shrink.")
+                    base_content_size -= 2
+                    base_title_size -= 2
+                    continue
+                else:
+                    logger.warning(f"Text STILL overflowed even at minimum safe size! (Y={final_y} > {target_bottom}). Content will clip slightly.")
+                    spacing_bonus = 0
+            else:
+                empty_space = target_bottom - final_y
+                spacing_bonus = int(empty_space / 7)
+                logger.info(f"Layout fits beautifully at font size {base_content_size}px! Distributing {empty_space}px of extra space as a {spacing_bonus}px gap bonus.")
             
             # PASS 2: FINAL RENDER
             with Image.open(template_path) as img:
                 draw = ImageDraw.Draw(img)
                 _layout_pass(draw, spacing_bonus=spacing_bonus)
                 
-                # Draw Watermark at the bottom center
                 watermark_text = "@mahabharata_chronicles"
                 watermark_font = load_font(font_path, 30)
                 draw.text((img_width/2, 1840), watermark_text, font=watermark_font, fill=(139, 69, 19, 200), anchor="ms")
