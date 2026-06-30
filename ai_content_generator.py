@@ -65,13 +65,7 @@ def _generate_with_key(api_key: str, dynamic_prompt: str) -> CharacterPost:
         raise
 
 def generate_character_post(dynamic_prompt: str) -> CharacterPost:
-    api_keys = [
-        Config.OPENROUTER_API_KEY,
-        Config.OPENROUTER_FALLBACK_API_KEY,
-        Config.OPENROUTER_FALLBACK_API_KEY_1,
-        Config.OPENROUTER_FALLBACK_API_KEY_2,
-        Config.OPENROUTER_FALLBACK_API_KEY_3
-    ]
+    api_keys = Config.OPENROUTER_API_KEYS
     valid_keys = [k for k in api_keys if k and k.strip()]
     
     last_error = None
