@@ -24,7 +24,7 @@ def save_history(character_name: str):
         json.dump(history, f, indent=4)
 
 def get_posting_state() -> dict:
-    default_state = {"current_character": None, "posted_types": []}
+    default_state = {"current_character": None, "posted_types": [], "date": None}
     if not os.path.exists(STATE_FILE):
         return default_state
     try:
@@ -36,12 +36,14 @@ def get_posting_state() -> dict:
                 state["current_character"] = None
             if "posted_types" not in state:
                 state["posted_types"] = []
+            if "date" not in state:
+                state["date"] = None
             return state
     except Exception as e:
         logger.warning(f"Failed to load posting state: {e}")
         return default_state
 
-def update_posting_state(character: str, posted_type: str):
+def update_posting_state(character: str, posted_type: str, current_date: str = None):
     state = get_posting_state()
     if state["current_character"] != character:
         state["current_character"] = character
@@ -49,6 +51,9 @@ def update_posting_state(character: str, posted_type: str):
     
     if posted_type not in state["posted_types"]:
         state["posted_types"].append(posted_type)
+        
+    if current_date:
+        state["date"] = current_date
         
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=4)

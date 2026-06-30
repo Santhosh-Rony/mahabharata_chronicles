@@ -27,6 +27,18 @@ def main():
 
         # 1. Select the character based on state tracking
         state = get_posting_state()
+        today_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        
+        # If it's a new day, we force an advance to the next character!
+        if state.get("date") != today_date:
+            logger.info(f"New day detected ({today_date})! Advancing to the next character.")
+            if state.get("current_character"):
+                # Save yesterday's character to history so we don't repeat them
+                save_history(state["current_character"])
+            clear_posting_state()
+            state = get_posting_state() # Reload clean state
+            state["date"] = today_date
+            
         current_character = state["current_character"]
         
         if not current_character:
@@ -40,12 +52,15 @@ def main():
                 
             current_character = available_characters[0]
             logger.info(f"Selected new daily Character: {current_character}")
+            state["current_character"] = current_character
+            state["date"] = today_date
+            # Immediately save the state so other jobs know who today's character is
+            update_posting_state(current_character, post_type, today_date)
         else:
             logger.info(f"Resuming daily Character: {current_character}")
 
         if post_type in state["posted_types"]:
             logger.warning(f"The '{post_type}' post for {current_character} has already been generated today!")
-            # We continue anyway to allow for regeneration if the user wants it
             
         logger.info(f"--- Generating {post_type.upper()} post for {current_character} ---")
         
@@ -91,15 +106,8 @@ def main():
             logger.warning(f"Audio file '{audio_path}' not found! Generated static image only.")
             
         # 5. Update State
-        update_posting_state(current_character, post_type)
+        update_posting_state(current_character, post_type, today_date)
         
-        # 6. Check Completion
-        new_state = get_posting_state()
-        if len(new_state["posted_types"]) >= 3:
-            logger.info(f"All 3 posts completed for {current_character}! Marking as fully posted.")
-            save_history(current_character)
-            clear_posting_state()
-            
         logger.info("Automation completed successfully.")
 
     except Exception as e:
