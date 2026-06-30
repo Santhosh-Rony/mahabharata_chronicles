@@ -51,8 +51,8 @@ Format:
         ],
         "answer": "A"
     }},
-    "caption": "An engaging Instagram caption...",
-    "hashtags": "#Mahabharata #Mythology"
+    "caption": "An engaging Instagram caption with emojis...",
+    "hashtags": "#Mahabharata #History #Mahabharata_cronicles"
 }}
 
 Rules:
