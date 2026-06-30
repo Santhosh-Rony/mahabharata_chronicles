@@ -55,12 +55,9 @@ def main():
             state["current_character"] = current_character
             state["date"] = today_date
             # Immediately save the state so other jobs know who today's character is
-            update_posting_state(current_character, post_type, today_date)
+            update_posting_state(current_character, today_date)
         else:
             logger.info(f"Resuming daily Character: {current_character}")
-
-        if post_type in state["posted_types"]:
-            logger.warning(f"The '{post_type}' post for {current_character} has already been generated today!")
             
         logger.info(f"--- Generating {post_type.upper()} post for {current_character} ---")
         
@@ -106,7 +103,7 @@ def main():
             logger.warning(f"Audio file '{audio_path}' not found! Generated static image only.")
             
         # 5. Update State
-        update_posting_state(current_character, post_type, today_date)
+        update_posting_state(current_character, today_date)
         
         logger.info("Automation completed successfully.")
 
