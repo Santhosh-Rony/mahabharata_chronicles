@@ -1,0 +1,58 @@
+import os
+import json
+from typing import List, Dict
+from logger import logger
+
+HISTORY_FILE = "posted_characters.json"
+STATE_FILE = "posting_state.json"
+
+def load_history() -> List[str]:
+    if not os.path.exists(HISTORY_FILE):
+        return []
+    try:
+        with open(HISTORY_FILE, "r") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning(f"Failed to load history: {e}")
+        return []
+
+def save_history(character_name: str):
+    history = load_history()
+    if character_name not in history:
+        history.append(character_name)
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(history, f, indent=4)
+
+def get_posting_state() -> dict:
+    default_state = {"current_character": None, "posted_types": []}
+    if not os.path.exists(STATE_FILE):
+        return default_state
+    try:
+        with open(STATE_FILE, "r") as f:
+            state = json.load(f)
+            if not isinstance(state, dict):
+                return default_state
+            if "current_character" not in state:
+                state["current_character"] = None
+            if "posted_types" not in state:
+                state["posted_types"] = []
+            return state
+    except Exception as e:
+        logger.warning(f"Failed to load posting state: {e}")
+        return default_state
+
+def update_posting_state(character: str, posted_type: str):
+    state = get_posting_state()
+    if state["current_character"] != character:
+        state["current_character"] = character
+        state["posted_types"] = []
+    
+    if posted_type not in state["posted_types"]:
+        state["posted_types"].append(posted_type)
+        
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f, indent=4)
+
+def clear_posting_state():
+    if os.path.exists(STATE_FILE):
+        os.remove(STATE_FILE)

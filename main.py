@@ -1,0 +1,110 @@
+import os
+import sys
+import datetime
+import argparse
+from logger import logger
+from config import Config
+from characters import MAHABHARATA_CHARACTERS
+from history import load_history, save_history, get_posting_state, update_posting_state, clear_posting_state
+from prompt import get_character_post_prompt
+from ai_content_generator import generate_character_post
+from template_renderer import render_reel_image
+from video_generator import generate_video
+from video_uploader import upload_video
+import json
+# from instagram_publisher import publish_reel
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate Mahabharata Reels.")
+    parser.add_argument("type", choices=["profile", "essence", "legacy"], help="Type of post to generate")
+    args = parser.parse_args()
+    
+    post_type = args.type
+
+    try:
+        logger.info(f"Starting Mahabharata Reels Automation for post type: {post_type.upper()}")
+        Config.validate()
+
+        # 1. Select the character based on state tracking
+        state = get_posting_state()
+        current_character = state["current_character"]
+        
+        if not current_character:
+            # Pick a fresh character!
+            past_characters = load_history()
+            available_characters = [c for c in MAHABHARATA_CHARACTERS if c not in past_characters]
+            
+            if not available_characters:
+                logger.error("All characters have been posted! Add more to characters.py")
+                sys.exit(1)
+                
+            current_character = available_characters[0]
+            logger.info(f"Selected new daily Character: {current_character}")
+        else:
+            logger.info(f"Resuming daily Character: {current_character}")
+
+        if post_type in state["posted_types"]:
+            logger.warning(f"The '{post_type}' post for {current_character} has already been generated today!")
+            # We continue anyway to allow for regeneration if the user wants it
+            
+        logger.info(f"--- Generating {post_type.upper()} post for {current_character} ---")
+        
+        # 2. Generate Content
+        prompt = get_character_post_prompt(current_character, post_type)
+        post = generate_character_post(prompt)
+        
+        # 3. Render Image
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        template_path = "templates/mahabharata_bg.png"
+        image_output_path = f"output/{current_character}_{post_type}_{timestamp}.png"
+        
+        render_reel_image(post, template_path, image_output_path)
+        
+        # 4. Generate Video (requires audio)
+        audio_path = "music.mp3"
+        video_output_path = f"output/{current_character}_{post_type}_{timestamp}.mp4"
+        
+        if os.path.exists(audio_path):
+            generate_video(image_output_path, audio_path, video_output_path, duration=10)
+            logger.info(f"Video ready for Instagram: {video_output_path}")
+            
+            # Save the generated caption to a text file for easy copy-pasting
+            caption_path = f"output/{current_character}_{post_type}_{timestamp}.txt"
+            with open(caption_path, "w", encoding="utf-8") as f:
+                f.write(post.caption + "\n\n" + post.hashtags)
+            logger.info(f"Caption and Hashtags saved to: {caption_path}")
+            
+            # Prepare Video for GitHub Pages
+            video_url = upload_video(video_output_path)
+            
+            # Save metadata for publish_instagram.py
+            metadata = {
+                "video_url": video_url,
+                "caption": f"{post_caption}\n\n{post.hashtags}" if 'post_caption' in locals() else f"{post.caption}\n\n{post.hashtags}"
+            }
+            metadata_path = os.path.join("output", "post_metadata.json")
+            with open(metadata_path, 'w', encoding='utf-8') as f:
+                json.dump(metadata, f, indent=4)
+                
+            logger.info(f"Metadata saved to {metadata_path}. Generation complete. Awaiting GitHub Actions sync.")
+        else:
+            logger.warning(f"Audio file '{audio_path}' not found! Generated static image only.")
+            
+        # 5. Update State
+        update_posting_state(current_character, post_type)
+        
+        # 6. Check Completion
+        new_state = get_posting_state()
+        if len(new_state["posted_types"]) >= 3:
+            logger.info(f"All 3 posts completed for {current_character}! Marking as fully posted.")
+            save_history(current_character)
+            clear_posting_state()
+            
+        logger.info("Automation completed successfully.")
+
+    except Exception as e:
+        logger.error(f"Application run failed: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
