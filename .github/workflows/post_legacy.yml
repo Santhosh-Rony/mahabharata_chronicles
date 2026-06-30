@@ -47,7 +47,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ output/
+          git add output/
           [ -f posted_characters.json ] && git add posted_characters.json
           [ -f posting_state.json ] && git add posting_state.json
           git commit -m "Auto-update daily legacy video and history" || echo "No changes to commit"
@@ -66,7 +66,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          rm -f output/*.png output/*.mp4 docs/*.mp4 docs/*.png output/*.txt
-          git add docs/ output/
+          rm -f output/*.png output/*.mp4 output/*.txt
+          git add output/
           git commit -m "Auto-cleanup published media files" || echo "No files to clean up"
           git push
