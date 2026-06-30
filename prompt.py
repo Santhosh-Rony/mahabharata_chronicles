@@ -6,31 +6,31 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
         title_format = f'"{character_name.upper()} | The [Epithet]"'
         sections_schema = """
         "sections": [
-            {"title": "KNOWN FOR", "content": "2-3 short sentences about what they are most famous for."},
-            {"title": "GREATEST STRENGTH", "content": "2-3 short sentences about their greatest strength."},
-            {"title": "THE WEAKNESS", "content": "2-3 short sentences about their greatest weakness or tragic flaw."},
-            {"title": "GREATEST ACHIEVEMENT", "content": "2-3 short sentences about their greatest achievement."},
-            {"title": "LIFE LESSON", "content": "2-3 short sentences for a profound life lesson we can learn from them."}
+            {"title": "KNOWN FOR", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about what they are most famous for."},
+            {"title": "GREATEST STRENGTH", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest strength."},
+            {"title": "THE WEAKNESS", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest weakness or tragic flaw."},
+            {"title": "GREATEST ACHIEVEMENT", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest achievement."},
+            {"title": "LIFE LESSON", "content": "1-2 short sentences (Strictly between 80 and 140 characters) for a profound life lesson we can learn from them."}
         ],"""
     elif post_type == "essence":
         title_format = f'"{character_name.upper()} | The Essence of {character_name.title()}"'
         sections_schema = """
         "sections": [
-            {"title": "DEFINING MOMENT", "content": "2-3 short sentences about their most defining moment."},
-            {"title": "BIGGEST SACRIFICE", "content": "2-3 short sentences about the greatest sacrifice they made."},
-            {"title": "TOUGHEST DECISION", "content": "2-3 short sentences about the most difficult decision they faced."},
-            {"title": "GREATEST VICTORY", "content": "2-3 short sentences about their ultimate victory."},
-            {"title": "GREATEST FAILURE", "content": "2-3 short sentences about their worst failure or mistake."}
+            {"title": "DEFINING MOMENT", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their most defining moment."},
+            {"title": "BIGGEST SACRIFICE", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the greatest sacrifice they made."},
+            {"title": "TOUGHEST DECISION", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the most difficult decision they faced."},
+            {"title": "GREATEST VICTORY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their ultimate victory."},
+            {"title": "GREATEST FAILURE", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their worst failure or mistake."}
         ],"""
     elif post_type == "legacy":
         title_format = f'"{character_name.upper()} | The Legacy of {character_name.title()}"'
         sections_schema = """
         "sections": [
-            {"title": "GREATEST QUALITY", "content": "2-3 short sentences about their greatest defining quality."},
-            {"title": "GREATEST RIVALRY", "content": "2-3 short sentences about their most epic rivalry."},
-            {"title": "MOST POWERFUL WORDS", "content": "2-3 short sentences containing their most famous or impactful quote/teaching."},
-            {"title": "WHY HISTORY REMEMBERS THEM", "content": "2-3 short sentences about why they are remembered."},
-            {"title": "TIMELESS LEGACY", "content": "2-3 short sentences about the timeless legacy they left behind."}
+            {"title": "GREATEST QUALITY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest defining quality."},
+            {"title": "GREATEST RIVALRY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their most epic rivalry."},
+            {"title": "MOST POWERFUL WORDS", "content": "1-2 short sentences (Strictly between 80 and 140 characters) containing their most famous or impactful quote/teaching."},
+            {"title": "WHY HISTORY REMEMBERS THEM", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about why they are remembered."},
+            {"title": "TIMELESS LEGACY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the timeless legacy they left behind."}
         ],"""
 
     return f"""You are a master storyteller and historian specializing in the Indian epic, the Mahabharata.
@@ -56,8 +56,9 @@ Format:
 }}
 
 Rules:
-* The language should be epic, dramatic, and deeply respectful.
-* Keep text short and punchy so it fits on a mobile phone screen.
+* The language should be epic, dramatic, and deeply respectful, but MUST be plain, easily understandable, and completely free of complex jargon!
+* VERY IMPORTANT: You must STRICTLY limit each section to 1-2 short sentences between 80 and 140 characters. If it is longer, it will physically break the template image generator.
 * The quiz should have exactly 4 options. Make sure the question is engaging and encourages comments!
+* Each quiz option MUST be under 30 characters so they fit side-by-side perfectly.
 * JSON only. No markdown formatting blocks like ```json.
 """
