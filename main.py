@@ -29,12 +29,20 @@ def main():
         state = get_posting_state()
         today_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
         
+        # Define Generic Music Sequence
+        generic_music_files = ["music.mp3", "music1.mp3", "music2.mp3", "music3.mp3", "music4.mp3", "music5.mp3", "music6.mp3", "music7.mp3"]
+        
         # If it's a new day, we force an advance to the next character!
         if state.get("date") != today_date:
             logger.info(f"New day detected ({today_date})! Advancing to the next character.")
             if state.get("current_character"):
                 # Save yesterday's character to history so we don't repeat them
                 save_history(state["current_character"])
+                
+                # If yesterday's character used generic music, advance the generic music index!
+                if state["current_character"].lower() not in ["krishna", "karna"]:
+                    state["generic_music_index"] = (state.get("generic_music_index", 0) + 1) % len(generic_music_files)
+                    
             clear_posting_state()
             state = get_posting_state() # Reload clean state
             state["date"] = today_date
@@ -55,7 +63,7 @@ def main():
             state["current_character"] = current_character
             state["date"] = today_date
             # Immediately save the state so other jobs know who today's character is
-            update_posting_state(current_character, today_date)
+            update_posting_state(current_character, today_date, state.get("generic_music_index"))
         else:
             logger.info(f"Resuming daily Character: {current_character}")
             
@@ -72,8 +80,18 @@ def main():
         
         render_reel_image(post, template_path, image_output_path)
         
-        # 4. Generate Video (requires audio)
-        audio_path = "music.mp3"
+        # 4. Select Audio and Generate Video
+        # Determine which background music to use
+        char_lower = current_character.lower()
+        if char_lower == "krishna":
+            audio_path = "krishna.mp3"
+        elif char_lower == "karna":
+            audio_path = "karna.mp3"
+        else:
+            idx = state.get("generic_music_index", 0)
+            audio_path = generic_music_files[idx]
+            
+        logger.info(f"Selected Audio Track: {audio_path}")
         video_output_path = f"output/{current_character}_{post_type}_{timestamp}.mp4"
         
         if os.path.exists(audio_path):
