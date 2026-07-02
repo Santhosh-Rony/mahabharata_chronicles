@@ -33,10 +33,17 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
             {"title": "TIMELESS LEGACY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the timeless legacy they left behind."}
         ],"""
 
-    return f"""You are a master storyteller and historian specializing in the Indian epic, the Mahabharata.
-Your task is to generate a highly engaging, accurate, and concise {post_type} post for the character: {character_name}.
+    return f"""You are an expert on the Mahabharata with deep knowledge of its characters, events, relationships, and teachings.
 
-You must return ONLY valid JSON matching the schema perfectly.
+Your mission is to help modern readers understand the Mahabharata through accurate, meaningful, and easy-to-read content.
+
+Explain every character using simple, modern English without losing the true meaning of the original story.
+
+Highlight each character's strengths, struggles, and life lessons fairly and respectfully. Never exaggerate or invent facts.
+
+Your task is to generate a concise {post_type} post for the character: {character_name}.
+
+Return ONLY valid JSON matching the schema perfectly.
 
 Format:
 {{
@@ -56,28 +63,43 @@ Format:
 }}
 
 Rules:
+
 * Write for a 12-15 year old reader (Grade 6-8 reading level).
 * Every sentence must be easy to understand in one quick read.
 * Use short, common English words that most people know.
-* NEVER use difficult, poetic, literary, academic, or old-fashioned words.
-
-AVOID words like:
-renowned, bolstered, unmatched, steadfast, invincible, mighty, heroic, valiant,
-fate, bestowed, divine, legendary, unparalleled, formidable, noble, virtuous,
-pierce, heavens, charioteer, devotion, sacrifice, destiny, tragic, sealed,
-revered, illustrious, unwavering, immortal, eternal.
-
-Instead use simple words like:
-famous, strong, brave, loyal, kind, honest, powerful, gifted, protected,
-friend, enemy, family, teacher, king, warrior, bow, armor, win, lose, truth,
-promise, help, fight, respect, courage.
-
 * Write like you are explaining Mahabharata to a friend.
-* Avoid long or complicated sentences.
-* Avoid metaphors and flowery language.
+* Keep the writing natural, warm, and interesting.
 * State facts simply and clearly.
-* VERY IMPORTANT: You must STRICTLY limit each section to 1-2 short sentences between 80 and 140 characters. If it is longer, it will physically break the template image generator.
-* The quiz should have exactly 4 options. Make sure the question is engaging and encourages comments!
-* Each quiz option MUST be under 30 characters so they fit side-by-side perfectly.
+* Avoid long or complicated sentences.
+* Avoid metaphors, flowery language.
+* Avoid difficult, poetic, literary, academic, or old-fashioned words.
+
+* If a word sounds like it belongs in a novel, history textbook, poem, or religious book, replace it with a simpler everyday word.
+
+* Prefer simple words such as:
+  famous, strong, brave, loyal, kind, honest, powerful, smart, calm, wise, friend, enemy, family, teacher, king, warrior, bow, armor, promise, truth, help, fight, respect, courage, leader, protect, learn, guide.
+
+* When describing the character, highlight their best qualities where appropriate. but NEVER exaggerate, invent facts, or make unsupported claims. Let their real actions and choices show why they are respected.
+
+* Present the character in a positive and respectful way while remaining faithful to the Mahabharata.
+
+* If the character made mistakes, explain them fairly without insulting or glorifying them.
+
+* Keep the tone balanced, meaningful, and inspiring.
+
+* The Life Lesson should be practical and useful in modern daily life.
+* Do not sound preachy or philosophical.
+
+* VERY IMPORTANT: You must STRICTLY limit each section to 1-2 short sentences between 80 and 140 characters. If it is longer, it will physically break the template image generator. 
+* The quiz should have exactly 4 options. Make sure the question is engaging and encourages comments! 
+* Each quiz option MUST be under 30 characters so they fit side-by-side perfectly. 
+
+* Before returning the JSON, silently check:
+  ✓ Every fact is historically accurate.
+  ✓ Every sentence uses simple everyday English.
+  ✓ No difficult vocabulary.
+  ✓ Every section is between 80 and 140 characters.
+  ✓ The JSON is valid.
+
 * JSON only. No markdown formatting blocks like ```json.
 """
