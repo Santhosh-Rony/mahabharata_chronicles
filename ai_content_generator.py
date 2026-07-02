@@ -1,6 +1,7 @@
 import os
 import json
 from openai import OpenAI
+from google import genai
 from config import Config
 from logger import logger
 from models import CharacterPost
@@ -64,19 +65,71 @@ def _generate_with_key(api_key: str, dynamic_prompt: str) -> CharacterPost:
         logger.error(f"Failed to generate AI content: {e}")
         raise
 
+def _generate_with_gemini(api_key: str, dynamic_prompt: str) -> CharacterPost:
+    logger.info("Attempting content generation using model: gemini-2.5-flash")
+    client = genai.Client(api_key=api_key)
+    
+    # We use a system-like instruction prefix in the contents for Gemini
+    system_instruction = "You are a helpful assistant that strictly outputs valid JSON data matching the requested schema. You are an expert at clear, concise writing. Return ONLY JSON.\n\n"
+    
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=system_instruction + dynamic_prompt
+        )
+        
+        content = response.text
+        logger.info("Successfully received response from Gemini API")
+        
+        # Parse JSON
+        start_idx = content.find('{')
+        end_idx = content.rfind('}')
+        if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+            json_string = content[start_idx:end_idx+1]
+            parsed_json = json.loads(json_string)
+        else:
+            parsed_json = json.loads(content)
+        
+        # Validate against Pydantic Model
+        post = CharacterPost(**parsed_json)
+        return post
+        
+    except Exception as e:
+        logger.error(f"Failed to generate AI content with Gemini: {e}")
+        raise
+
 def generate_character_post(dynamic_prompt: str) -> CharacterPost:
+    last_error = None
+    
+    # 1. Try Gemini first (Primary)
+    if Config.GEMINI_API_KEY:
+        logger.info("GEMINI_API_KEY found. Attempting generation with Gemini...")
+        try:
+            return _generate_with_gemini(Config.GEMINI_API_KEY, dynamic_prompt)
+        except Exception as e:
+            logger.warning(f"Gemini generation failed: {e}. Falling back to OpenRouter...")
+            last_error = e
+    else:
+        logger.warning("GEMINI_API_KEY not found. Skipping Gemini and using OpenRouter...")
+
+    # 2. Fallback to OpenRouter keys
     api_keys = Config.OPENROUTER_API_KEYS
     valid_keys = [k for k in api_keys if k and k.strip()]
     
-    last_error = None
+    if not valid_keys:
+        logger.error("No valid OpenRouter fallback keys found!")
+        if last_error:
+            raise last_error
+        raise ValueError("No API keys configured.")
+        
     for idx, key in enumerate(valid_keys):
-        logger.info(f"Attempting generation using Key #{idx+1}...")
+        logger.info(f"Attempting fallback generation using OpenRouter Key #{idx+1}...")
         try:
             return _generate_with_key(key, dynamic_prompt)
         except Exception as e:
-            logger.warning(f"Key #{idx+1} failed: {e}")
+            logger.warning(f"OpenRouter Key #{idx+1} failed: {e}")
             last_error = e
             continue
             
-    logger.error("All available API keys exhausted.")
+    logger.error("All available API keys (Gemini and OpenRouter) exhausted.")
     raise last_error

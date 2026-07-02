@@ -31,6 +31,7 @@ jobs:
 
       - name: Generate Content and Render Video
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_FALLBACK_API_KEY: ${{ secrets.OPENROUTER_FALLBACK_API_KEY }}
           OPENROUTER_FALLBACK_API_KEY_1: ${{ secrets.OPENROUTER_FALLBACK_API_KEY_1 }}
