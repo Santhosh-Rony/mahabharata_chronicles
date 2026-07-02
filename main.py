@@ -30,7 +30,11 @@ def main():
         today_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
         
         # Define Generic Music Sequence
-        generic_music_files = ["music.mp3", "music1.mp3", "music2.mp3", "music3.mp3", "music4.mp3", "music5.mp3", "music6.mp3", "music7.mp3"]
+        generic_music_files = [
+            "music/music.mp3", "music/music1.mp3", "music/music2.mp3", "music/music3.mp3",
+            "music/music4.mp3", "music/music5.mp3", "music/music6.mp3", "music/music7.mp3",
+            "music/music8.mp3", "music/music9.mp3", "music/music10.mp3", "music/music11.mp3"
+        ]
         
         # If it's a new day, we force an advance to the next character!
         if state.get("date") != today_date:
@@ -38,10 +42,6 @@ def main():
             if state.get("current_character"):
                 # Save yesterday's character to history so we don't repeat them
                 save_history(state["current_character"])
-                
-                # If yesterday's character used generic music, advance the generic music index!
-                if state["current_character"].lower() not in ["krishna", "karna"]:
-                    state["generic_music_index"] = (state.get("generic_music_index", 0) + 1) % len(generic_music_files)
                     
             clear_posting_state()
             state = get_posting_state() # Reload clean state
@@ -83,13 +83,17 @@ def main():
         # 4. Select Audio and Generate Video
         # Determine which background music to use
         char_lower = current_character.lower()
+        next_generic_idx = state.get("generic_music_index", 0) # Keep current index by default
+        
         if char_lower == "krishna":
-            audio_path = "krishna.mp3"
+            audio_path = "music/krishna.mp3"
         elif char_lower == "karna":
-            audio_path = "karna.mp3"
+            audio_path = "music/karna.mp3"
         else:
             idx = state.get("generic_music_index", 0)
             audio_path = generic_music_files[idx]
+            # Advance the generic music index for the NEXT post, looping if necessary
+            next_generic_idx = (idx + 1) % len(generic_music_files)
             
         logger.info(f"Selected Audio Track: {audio_path}")
         video_output_path = f"output/{current_character}_{post_type}_{timestamp}.mp4"
@@ -121,7 +125,7 @@ def main():
             logger.warning(f"Audio file '{audio_path}' not found! Generated static image only.")
             
         # 5. Update State
-        update_posting_state(current_character, today_date)
+        update_posting_state(current_character, today_date, next_generic_idx)
         
         logger.info("Automation completed successfully.")
 
