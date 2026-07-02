@@ -56,7 +56,26 @@ Format:
 }}
 
 Rules:
-* The language should be epic, dramatic, and deeply respectful, but MUST be plain, easily understandable, and completely free of complex jargon!
+* Write for a 12-15 year old reader (Grade 6-8 reading level).
+* Every sentence must be easy to understand in one quick read.
+* Use short, common English words that most people know.
+* NEVER use difficult, poetic, literary, academic, or old-fashioned words.
+
+AVOID words like:
+renowned, bolstered, unmatched, steadfast, invincible, mighty, heroic, valiant,
+fate, bestowed, divine, legendary, unparalleled, formidable, noble, virtuous,
+pierce, heavens, charioteer, devotion, sacrifice, destiny, tragic, sealed,
+revered, illustrious, unwavering, immortal, eternal.
+
+Instead use simple words like:
+famous, strong, brave, loyal, kind, honest, powerful, gifted, protected,
+friend, enemy, family, teacher, king, warrior, bow, armor, win, lose, truth,
+promise, help, fight, respect, courage.
+
+* Write like you are explaining Mahabharata to a friend.
+* Avoid long or complicated sentences.
+* Avoid metaphors and flowery language.
+* State facts simply and clearly.
 * VERY IMPORTANT: You must STRICTLY limit each section to 1-2 short sentences between 80 and 140 characters. If it is longer, it will physically break the template image generator.
 * The quiz should have exactly 4 options. Make sure the question is engaging and encourages comments!
 * Each quiz option MUST be under 30 characters so they fit side-by-side perfectly.
