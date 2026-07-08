@@ -5,6 +5,8 @@ import json
 from google import genai
 from google.genai import types
 from tenacity import retry, stop_after_attempt, wait_exponential
+import urllib.parse
+import requests
 
 from logger import logger
 from config import Config
@@ -32,25 +34,32 @@ def generate_art_director_prompt(character: str, client: genai.Client) -> str:
     return response.text
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
-def generate_epic_image(image_prompt: str, client: genai.Client, output_path: str):
-    """Uses Imagen 3 to generate the actual image based on the prompt."""
-    logger.info("Calling Imagen 3 to generate epic character image...")
+def generate_epic_image(image_prompt: str, output_path: str):
+    """Uses Hugging Face Serverless Inference API (FLUX.1-dev) to generate the actual image."""
+    logger.info("Calling Hugging Face API (FLUX.1-dev) to generate epic character image...")
     
-    result = client.models.generate_images(
-        model='imagen-3.0-generate-001',
-        prompt=image_prompt,
-        config=types.GenerateImagesConfig(
-            number_of_images=1,
-            output_mime_type="image/jpeg",
-            aspect_ratio="9:16" # Critical for Instagram Stories (1080x1920)
-        )
-    )
+    hf_token = Config.HUGGINGFACE_API_KEY
+    if not hf_token:
+        raise ValueError("HUGGINGFACE_API_KEY is missing. Cannot generate image.")
+        
+    API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev"
+    headers = {"Authorization": f"Bearer {hf_token}"}
     
-    for generated_image in result.generated_images:
-        image = generated_image.image
-        image.save(output_path)
-        logger.info(f"Image successfully generated and saved to {output_path}")
-        return
+    payload = {
+        "inputs": image_prompt,
+        "parameters": {
+            "width": 1080,
+            "height": 1920
+        }
+    }
+    
+    response = requests.post(API_URL, headers=headers, json=payload, timeout=120)
+    response.raise_for_status()
+    
+    with open(output_path, "wb") as f:
+        f.write(response.content)
+        
+    logger.info(f"Image successfully generated and saved to {output_path}")
 
 def main():
     try:
@@ -83,7 +92,7 @@ def main():
         image_filename = f"story_{current_character}_{timestamp}.jpg"
         image_output_path = f"output/{image_filename}"
         
-        generate_epic_image(art_prompt, client, image_output_path)
+        generate_epic_image(art_prompt, image_output_path)
         
         # The public URL follows the GitHub Raw Content convention for instant availability after push
         github_user = os.environ.get("GITHUB_USERNAME", "Santhosh-Rony")
