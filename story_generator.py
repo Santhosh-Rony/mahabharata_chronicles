@@ -42,7 +42,7 @@ def generate_epic_image(image_prompt: str, output_path: str):
     if not hf_token:
         raise ValueError("HUGGINGFACE_API_KEY is missing. Cannot generate image.")
         
-    API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev"
+    API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
     headers = {"Authorization": f"Bearer {hf_token}"}
     
     payload = {
