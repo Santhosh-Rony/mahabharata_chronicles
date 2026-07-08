@@ -37,14 +37,14 @@ def main():
         
         logger.info(f"Successfully published Instagram REEL with ID: {post_id}")
         
-        # 4. Publish to Instagram Stories
-        logger.info("Starting Step 2b: Instagram Story Publishing")
-        try:
-            story_id = publish_story(video_url)
-            logger.info(f"Successfully published Instagram STORY with ID: {story_id}")
-        except Exception as e:
-            logger.error(f"Story publishing failed, but Reel was successful: {e}")
-            # We don't exit(1) here because the primary REEL was successful.
+        # 4. Publish to Instagram Stories (DISABLED - Moved to dedicated image story pipeline)
+        # logger.info("Starting Step 2b: Instagram Story Publishing")
+        # try:
+        #     story_id = publish_story(video_url)
+        #     logger.info(f"Successfully published Instagram STORY with ID: {story_id}")
+        # except Exception as e:
+        #     logger.error(f"Story publishing failed, but Reel was successful: {e}")
+        #     # We don't exit(1) here because the primary REEL was successful.
         
     except Exception as e:
         logger.error(f"Publishing failed: {e}")

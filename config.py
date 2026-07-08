@@ -9,6 +9,7 @@ load_dotenv()
 class Config:
     # API Keys
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+    GEMINI_API_KEY_STORY = os.environ.get("GEMINI_API_KEY_STORY")
     OPENROUTER_API_KEYS = [k for k in [
         os.environ.get("OPENROUTER_API_KEY"),
         os.environ.get("OPENROUTER_FALLBACK_API_KEY"),
