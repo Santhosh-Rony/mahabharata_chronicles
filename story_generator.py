@@ -37,7 +37,7 @@ def generate_epic_image(image_prompt: str, client: genai.Client, output_path: st
     logger.info("Calling Imagen 3 to generate epic character image...")
     
     result = client.models.generate_images(
-        model='gemini-2.5-flash-image',
+        model='imagen-3.0-generate-001',
         prompt=image_prompt,
         config=types.GenerateImagesConfig(
             number_of_images=1,
@@ -61,6 +61,7 @@ def main():
         if not api_key:
             raise ValueError("GEMINI_API_KEY_STORY is missing. Cannot generate story image.")
             
+        logger.info("GEMINI_API_KEY_STORY found. Initializing client...")
         client = genai.Client(api_key=api_key)
         
         # Determine today's character
