@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from openai import OpenAI
 from google import genai
 from config import Config
@@ -104,11 +105,18 @@ def generate_character_post(dynamic_prompt: str) -> CharacterPost:
     # 1. Try Gemini first (Primary)
     if Config.GEMINI_API_KEY:
         logger.info("GEMINI_API_KEY found. Attempting generation with Gemini...")
-        try:
-            return _generate_with_gemini(Config.GEMINI_API_KEY, dynamic_prompt)
-        except Exception as e:
-            logger.warning(f"Gemini generation failed: {e}. Falling back to OpenRouter...")
-            last_error = e
+        max_retries = 5
+        for attempt in range(max_retries + 1):
+            try:
+                return _generate_with_gemini(Config.GEMINI_API_KEY, dynamic_prompt)
+            except Exception as e:
+                last_error = e
+                if attempt < max_retries:
+                    wait_time = 5 * (attempt + 1)
+                    logger.warning(f"Gemini attempt {attempt + 1} failed: {e}. Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                else:
+                    logger.warning(f"Gemini failed after {max_retries} retries. Falling back to OpenRouter...")
     else:
         logger.warning("GEMINI_API_KEY not found. Skipping Gemini and using OpenRouter...")
 

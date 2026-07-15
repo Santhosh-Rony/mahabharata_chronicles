@@ -3,101 +3,82 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
     title_format = ""
     
     if post_type == "profile":
-        title_format = f'"{character_name.upper()} | The [Epithet]"'
+        title_format = f'"[Character Name in Telugu] | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] ప్రస్థానం"'
         sections_schema = """
         "sections": [
-            {"title": "KNOWN FOR", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about what they are most famous for."},
-            {"title": "GREATEST STRENGTH", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest strength."},
-            {"title": "THE WEAKNESS", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest weakness or tragic flaw."},
-            {"title": "GREATEST ACHIEVEMENT", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest achievement."},
-            {"title": "LIFE LESSON", "content": "1-2 short sentences (Strictly between 80 and 140 characters) for a profound life lesson we can learn from them."}
+            {"title": "వీరి ప్రత్యేకత", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about what they are most famous for."},
+            {"title": "అతిపెద్ద బలం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest strength."},
+            {"title": "బలహీనత", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest weakness or tragic flaw."},
+            {"title": "గొప్ప విజయం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest achievement."},
+            {"title": "జీవిత పాఠం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) for a profound life lesson we can learn from them."}
         ],"""
     elif post_type == "essence":
-        title_format = f'"{character_name.upper()} | The Essence of {character_name.title()}"'
+        title_format = f'"[Character Name in Telugu] | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] తత్వం"'
         sections_schema = """
         "sections": [
-            {"title": "DEFINING MOMENT", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their most defining moment."},
-            {"title": "BIGGEST SACRIFICE", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the greatest sacrifice they made."},
-            {"title": "TOUGHEST DECISION", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the most difficult decision they faced."},
-            {"title": "GREATEST VICTORY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their ultimate victory."},
-            {"title": "GREATEST FAILURE", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their worst failure or mistake."}
+            {"title": "కీలక ఘట్టం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their most defining moment."},
+            {"title": "గొప్ప త్యాగం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about the greatest sacrifice they made."},
+            {"title": "కష్టమైన నిర్ణయం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about the most difficult decision they faced."},
+            {"title": "అతిపెద్ద విజయం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their ultimate victory."},
+            {"title": "అతిపెద్ద ఓటమి", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their worst failure or defeat."}
         ],"""
     elif post_type == "legacy":
-        title_format = f'"{character_name.upper()} | The Legacy of {character_name.title()}"'
+        title_format = f'"[Character Name in Telugu] | చరిత్రలో [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] ముద్ర"'
         sections_schema = """
         "sections": [
-            {"title": "GREATEST QUALITY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their greatest defining quality."},
-            {"title": "GREATEST RIVALRY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about their most epic rivalry."},
-            {"title": "MOST POWERFUL WORDS", "content": "1-2 short sentences (Strictly between 80 and 140 characters) containing their most famous or impactful quote/teaching."},
-            {"title": "WHY HISTORY REMEMBERS THEM", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about why they are remembered."},
-            {"title": "TIMELESS LEGACY", "content": "1-2 short sentences (Strictly between 80 and 140 characters) about the timeless legacy they left behind."}
+            {"title": "గొప్ప లక్షణం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest defining quality."},
+            {"title": "అతిపెద్ద శత్రుత్వం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their most epic rivalry."},
+            {"title": "గొప్ప మాటలు", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) containing their most famous or impactful quote/teaching."},
+            {"title": "చరిత్ర ఎందుకు గుర్తుంచుకుంటుంది", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about why they are remembered."},
+            {"title": "చరిత్రలో వారి ముద్ర", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about the timeless legacy they left behind."}
         ],"""
 
     return f"""You are an expert on the Mahabharata with deep knowledge of its characters, events, relationships, and teachings.
 
-Your mission is to help modern readers understand the Mahabharata through accurate, meaningful, and easy-to-read content.
+Your mission is to write high-impact, emotional, and cinematic text for an Instagram Reel about the Mahabharata.
+CRITICAL REQUIREMENT: YOU MUST WRITE EVERYTHING IN TELUGU (తెలుగు), INCLUDING THE CHARACTER'S NAME.
 
-Explain every character using simple, modern English without losing the true meaning of the original story.
-
-Highlight each character's strengths, struggles, and life lessons fairly and respectfully. Never exaggerate or invent facts.
+However, you must use "సాధారణ తెలుగు" (General, colloquial, everyday Telugu that is easy to read). DO NOT use overly complex Sanskritized words or bookish "గ్రాంథికం" (Grandhikam). Write it like a powerful, punchy dialogue from a modern epic movie (like Baahubali), but keep the words simple so normal people can read it fast.
 
 Your task is to generate a concise {post_type} post for the character: {character_name}.
 
-Return ONLY valid JSON matching the schema perfectly.
+Return ONLY valid JSON matching the schema perfectly. Do not output anything else.
 
 Format:
 {{
     "title": {title_format},{sections_schema}
     "quiz": {{
-        "question": "A multiple-choice question about this character. Make sure the correct answer is EXACTLY ONE of the 4 options below.",
+        "question": "A multiple-choice question about this character IN TELUGU. Make sure the correct answer is EXACTLY ONE of the 4 options below.",
         "options": [
-            {{"letter": "A", "text": "Option 1"}},
-            {{"letter": "B", "text": "Option 2"}},
-            {{"letter": "C", "text": "Option 3"}},
-            {{"letter": "D", "text": "Option 4"}}
+            {{"letter": "A", "text": "Option 1 in Telugu"}},
+            {{"letter": "B", "text": "Option 2 in Telugu"}},
+            {{"letter": "C", "text": "Option 3 in Telugu"}},
+            {{"letter": "D", "text": "Option 4 in Telugu"}}
         ],
         "answer": "A"
     }},
-    "caption": "An engaging Instagram caption with emojis...",
+    "caption": "An engaging Instagram caption with emojis IN TELUGU...",
     "hashtags": "#Mahabharata #History #Mahabharata_cronicles"
 }}
 
 Rules:
 
-* Write for a 12-15 year old reader (Grade 6-8 reading level).
-* Every sentence must be easy to understand in one quick read.
-* Use short, common English words that most people know.
-* Write like you are explaining Mahabharata to a friend.
-* Keep the writing natural, warm, and interesting.
-* State facts simply and clearly.
-* Avoid long or complicated sentences.
-* Avoid metaphors, flowery language.
-* Avoid difficult, poetic, literary, academic, or old-fashioned words.
-
-* If a word sounds like it belongs in a novel, history textbook, poem, or religious book, replace it with a simpler everyday word.
-
-* Prefer simple words such as:
-  famous, strong, brave, loyal, kind, honest, powerful, smart, calm, wise, friend, enemy, family, teacher, king, warrior, bow, armor, promise, truth, help, fight, respect, courage, leader, protect, learn, guide.
-
-* When describing the character, highlight their best qualities where appropriate. but NEVER exaggerate, invent facts, or make unsupported claims. Let their real actions and choices show why they are respected.
-
-* Present the character in a positive and respectful way while remaining faithful to the Mahabharata.
-
-* If the character made mistakes, explain them fairly without insulting or glorifying them.
-
+* Every single output string (except hashtags and JSON keys) MUST be in Telugu script.
+* Write for a general audience. Every sentence must be easy to understand in one quick read.
+* Use cinematic, heroic, and emotional vocabulary (e.g., ధర్మం, యుద్ధం, మాట, ప్రాణం) but avoid archaic words that need a dictionary.
+* When describing the character, highlight their best qualities where appropriate. 
 * Keep the tone balanced, meaningful, and inspiring.
-
 * The Life Lesson should be practical and useful in modern daily life.
-* Do not sound preachy or philosophical.
 
-* VERY IMPORTANT: You must STRICTLY limit each section to 1-2 short sentences between 80 and 140 characters. If it is longer, it will physically break the template image generator. 
-* The quiz should have exactly 4 options. Make sure the question is engaging and encourages comments! 
+* VERY IMPORTANT: You must STRICTLY limit each section content to 1-2 short sentences between 80 and 140 characters. If it is longer, it will physically break the template image generator. Count the Telugu characters carefully.
+* The quiz should have exactly 4 options in Telugu. Make sure the question is engaging and encourages comments! 
 * Each quiz option MUST be under 30 characters so they fit side-by-side perfectly. 
 
 * Before returning the JSON, silently check:
+  ✓ The language is strictly Telugu.
   ✓ Every fact is historically accurate.
-  ✓ Every sentence uses simple everyday English.
-  ✓ No difficult vocabulary.
+  ✓ Every sentence uses simple everyday Telugu.
+  ✓ No difficult vocabulary (No Grandhikam).
   ✓ Every section is between 80 and 140 characters.
   ✓ The JSON is valid.
 

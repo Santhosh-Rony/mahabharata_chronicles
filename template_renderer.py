@@ -62,8 +62,8 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
         base_title_size = 40
         
         while base_content_size >= 28:
-            font_path = "assets/NotoSerif-VariableFont_wdth,wght.ttf"
-            font_italic_path = "assets/NotoSerif-Italic-VariableFont_wdth,wght.ttf"
+            font_path = "assets/NotoSansTelugu-Bold.ttf"
+            font_italic_path = "assets/NotoSansTelugu-Regular.ttf"
             
             title_font = load_font(font_path, 80)
             section_title_font = load_font(font_path, base_title_size)
@@ -83,9 +83,9 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                     epithet = parts[1].strip()
                     
                     name_font = load_font(font_path, 100)
-                    draw.text((img_width/2, 190), char_name, font=name_font, fill=(90, 40, 10, 255), anchor="ms", stroke_width=3, stroke_fill=(90, 40, 10, 255))
+                    draw.text((img_width/2, 190), char_name, font=name_font, fill=(90, 40, 10, 255), anchor="ms", stroke_width=1, stroke_fill=(90, 40, 10, 255))
                     
-                    left, top, right, bottom = draw.textbbox((0, 0), char_name, font=name_font, stroke_width=3)
+                    left, top, right, bottom = draw.textbbox((0, 0), char_name, font=name_font, stroke_width=1)
                     text_w = right - left
                     line_y = 210
                     draw.line([(img_width/2 - text_w/2, line_y), (img_width/2 + text_w/2, line_y)], fill=(90, 40, 10, 255), width=5)
@@ -98,13 +98,13 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                     title_text = post.title.upper()
                     title_size = 80
                     t_font = load_font(font_path, title_size)
-                    left, top, right, bottom = draw.textbbox((0, 0), title_text, font=t_font, stroke_width=2)
+                    left, top, right, bottom = draw.textbbox((0, 0), title_text, font=t_font, stroke_width=1)
                     while (right - left) > (img_width - 100) and title_size > 30:
                         title_size -= 2
                         t_font = load_font(font_path, title_size)
-                        left, top, right, bottom = draw.textbbox((0, 0), title_text, font=t_font, stroke_width=2)
+                        left, top, right, bottom = draw.textbbox((0, 0), title_text, font=t_font, stroke_width=1)
                         
-                    draw.text((img_width/2, 150), title_text, font=t_font, fill=(90, 40, 10, 255), anchor="ms", stroke_width=2, stroke_fill=(90, 40, 10, 255))
+                    draw.text((img_width/2, 150), title_text, font=t_font, fill=(90, 40, 10, 255), anchor="ms", stroke_width=1, stroke_fill=(90, 40, 10, 255))
                     current_y = 280 + spacing_bonus
                 
                 # Content Sections
@@ -131,7 +131,7 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                 
                 # Quiz Section
                 quiz_y = current_y
-                draw.text((x_margin, quiz_y), "QUIZ :", font=section_title_font, fill=(139, 69, 19, 255), stroke_width=1, stroke_fill=(139, 69, 19, 255))
+                draw.text((x_margin, quiz_y), "ప్రశ్న :", font=section_title_font, fill=(139, 69, 19, 255), stroke_width=1, stroke_fill=(139, 69, 19, 255))
                 quiz_y += 50
                 
                 q_wrapped = wrap_text(post.quiz.question, quiz_font, max_width, draw)
@@ -142,8 +142,8 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                 
                 # Quiz Options Safety Net
                 safe_opts = [opt.text[:35] + "..." if len(opt.text) > 38 else opt.text for opt in post.quiz.options]
-                opt_row1 = f"A: {safe_opts[0]}    B: {safe_opts[1]}"
-                opt_row2 = f"C: {safe_opts[2]}    D: {safe_opts[3]}"
+                opt_row1 = f"- {safe_opts[0]}      - {safe_opts[1]}"
+                opt_row2 = f"- {safe_opts[2]}      - {safe_opts[3]}"
                 
                 left1, top1, right1, bottom1 = draw.textbbox((0, 0), opt_row1, font=quiz_font)
                 left2, top2, right2, bottom2 = draw.textbbox((0, 0), opt_row2, font=quiz_font)
@@ -163,9 +163,9 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                 
                 # Comment Call to Action
                 quiz_y += 60 + spacing_bonus
-                draw.text((x_margin, quiz_y), "Comment your answer below!", font=section_title_font, fill=(139, 69, 19, 255), stroke_width=1, stroke_fill=(139, 69, 19, 255))
+                draw.text((x_margin, quiz_y), "సరైన సమాధానాన్ని కామెంట్ చేయండి!", font=section_title_font, fill=(139, 69, 19, 255), stroke_width=1, stroke_fill=(139, 69, 19, 255))
                 
-                left, top, right, bottom = draw.textbbox((x_margin, quiz_y), "Comment your answer below!", font=section_title_font)
+                left, top, right, bottom = draw.textbbox((x_margin, quiz_y), "సరైన సమాధానాన్ని కామెంట్ చేయండి!", font=section_title_font)
                 return bottom
                 
             # PASS 1: MEASURE HEIGHT ON DUMMY IMAGE
@@ -195,7 +195,8 @@ def render_reel_image(post: CharacterPost, template_path: str, output_path: str)
                 _layout_pass(draw, spacing_bonus=spacing_bonus)
                 
                 watermark_text = "@mahabharata_chronicles"
-                watermark_font = load_font(font_path, 30)
+                english_font_path = "assets/NotoSerif-VariableFont_wdth,wght.ttf"
+                watermark_font = load_font(english_font_path, 30)
                 draw.text((img_width/2, 1840), watermark_text, font=watermark_font, fill=(139, 69, 19, 200), anchor="ms")
                 
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
