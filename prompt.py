@@ -2,8 +2,10 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
     sections_schema = ""
     title_format = ""
     
+    base_name_instruction = f"[Character Name '{character_name}' in Telugu script WITHOUT adding 'డు' (e.g., కృష్ణ, కర్ణ, అర్జున)]"
+    
     if post_type == "profile":
-        title_format = f'"[Character Name in Telugu] | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] ప్రస్థానం"'
+        title_format = f'"{base_name_instruction} | [Epithet/Title in Telugu]"'
         sections_schema = """
         "sections": [
             {"title": "వీరి ప్రత్యేకత", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about what they are most famous for."},
@@ -13,7 +15,7 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
             {"title": "జీవిత పాఠం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) for a profound life lesson we can learn from them."}
         ],"""
     elif post_type == "essence":
-        title_format = f'"[Character Name in Telugu] | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] తత్వం"'
+        title_format = f'"{base_name_instruction} | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] తత్వం"'
         sections_schema = """
         "sections": [
             {"title": "కీలక ఘట్టం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their most defining moment."},
@@ -23,7 +25,7 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
             {"title": "అతిపెద్ద ఓటమి", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their worst failure or defeat."}
         ],"""
     elif post_type == "legacy":
-        title_format = f'"[Character Name in Telugu] | చరిత్రలో [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] ముద్ర"'
+        title_format = f'"{base_name_instruction} | చరిత్రలో [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] ముద్ర"'
         sections_schema = """
         "sections": [
             {"title": "గొప్ప లక్షణం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest defining quality."},
