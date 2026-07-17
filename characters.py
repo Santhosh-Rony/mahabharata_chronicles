@@ -1,8 +1,8 @@
 MAHABHARATA_CHARACTERS = [
     # 👑 Tier 1 – The Core Legends (Must Know)
     "Krishna",
-    "Arjuna",
     "Karna",
+    "Arjuna",
     "Bhishma",
     "Draupadi",
     "Yudhishthira",

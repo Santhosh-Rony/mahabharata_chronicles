@@ -88,7 +88,19 @@ def main():
         if char_lower == "krishna":
             audio_path = "music/krishna.mp3"
         elif char_lower == "karna":
-            audio_path = "music/karna.mp3"
+            if post_type == "profile":
+                audio_path = "music/karna_1.mp3"
+            elif post_type == "essence":
+                audio_path = "music/karna_2.mp3"
+            else: # legacy
+                audio_path = "music/karna_3.mp3"
+        elif char_lower == "arjuna":
+            if post_type == "profile":
+                audio_path = "music/arjuna_1.mp3"
+            elif post_type == "essence":
+                audio_path = "music/arjuna_2.mp3"
+            else: # legacy
+                audio_path = "music/arjuna_3.mp3"
         else:
             idx = state.get("generic_music_index", 0)
             audio_path = generic_music_files[idx]

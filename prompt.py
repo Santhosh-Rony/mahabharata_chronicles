@@ -15,7 +15,7 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
             {"title": "జీవిత పాఠం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) for a profound life lesson we can learn from them."}
         ],"""
     elif post_type == "essence":
-        title_format = f'"{base_name_instruction} | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] తత్వం"'
+        title_format = f'"{base_name_instruction} | [Character Name in possessive Telugu (e.g. కర్ణుడి/కృష్ణుడి)] ప్రస్థానం"'
         sections_schema = """
         "sections": [
             {"title": "కీలక ఘట్టం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their most defining moment."},
