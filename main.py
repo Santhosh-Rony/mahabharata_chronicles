@@ -5,7 +5,7 @@ import argparse
 from logger import logger
 from config import Config
 from characters import MAHABHARATA_CHARACTERS
-from history import load_history, save_history, get_posting_state, update_posting_state, clear_posting_state
+from history import load_history, save_history, clear_history, get_posting_state, update_posting_state, clear_posting_state
 from prompt import get_character_post_prompt
 from ai_content_generator import generate_character_post
 from template_renderer import render_reel_image
@@ -55,8 +55,10 @@ def main():
             available_characters = [c for c in MAHABHARATA_CHARACTERS if c not in past_characters]
             
             if not available_characters:
-                logger.error("All characters have been posted! Add more to characters.py")
-                sys.exit(1)
+                logger.info("All characters have been posted! Resetting history to loop from the beginning.")
+                clear_history()
+                past_characters = []
+                available_characters = MAHABHARATA_CHARACTERS
                 
             current_character = available_characters[0]
             logger.info(f"Selected new daily Character: {current_character}")

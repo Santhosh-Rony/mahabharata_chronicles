@@ -10,7 +10,6 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
         "sections": [
             {"title": "వీరి ప్రత్యేకత", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about what they are most famous for."},
             {"title": "అతిపెద్ద బలం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest strength."},
-            {"title": "బలహీనత", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest weakness or tragic flaw."},
             {"title": "గొప్ప విజయం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest achievement."},
             {"title": "జీవిత పాఠం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) for a profound life lesson we can learn from them."}
         ],"""
@@ -20,7 +19,6 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
         "sections": [
             {"title": "కీలక ఘట్టం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their most defining moment."},
             {"title": "గొప్ప త్యాగం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about the greatest sacrifice they made."},
-            {"title": "కష్టమైన నిర్ణయం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about the most difficult decision they faced."},
             {"title": "అతిపెద్ద విజయం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their ultimate victory."},
             {"title": "అతిపెద్ద ఓటమి", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their worst failure or defeat."}
         ],"""
@@ -29,7 +27,6 @@ def get_character_post_prompt(character_name: str, post_type: str) -> str:
         sections_schema = """
         "sections": [
             {"title": "గొప్ప లక్షణం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their greatest defining quality."},
-            {"title": "అతిపెద్ద శత్రుత్వం", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about their most epic rivalry."},
             {"title": "గొప్ప మాటలు", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) containing their most famous or impactful quote/teaching."},
             {"title": "చరిత్ర ఎందుకు గుర్తుంచుకుంటుంది", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about why they are remembered."},
             {"title": "చరిత్రలో వారి ముద్ర", "content": "1-2 short sentences in Telugu (Strictly between 80 and 140 characters) about the timeless legacy they left behind."}

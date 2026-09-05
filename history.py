@@ -23,6 +23,10 @@ def save_history(character_name: str):
     with open(HISTORY_FILE, "w") as f:
         json.dump(history, f, indent=4)
 
+def clear_history():
+    with open(HISTORY_FILE, "w") as f:
+        json.dump([], f, indent=4)
+
 def get_posting_state() -> dict:
     default_state = {"current_character": None, "date": None, "generic_music_index": 0}
     if not os.path.exists(STATE_FILE):
